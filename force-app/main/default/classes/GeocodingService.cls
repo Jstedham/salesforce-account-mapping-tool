@@ -4,11 +4,20 @@ public with sharing class GeocodingService {
     }
 
     public class GeocodeResponse {
-        public Double latitude;
-        public Double longitude;
+        @AuraEnabled public Double latitude;
+        @AuraEnabled public Double longitude;
     }
 
+    public class GeocodingException extends Exception {}
+
+    @AuraEnabled(cacheable=false)
     public static GeocodeResponse getCoordinates(String address) {
+        if(String.isBlank(address)) {
+            AuraHandledException ae = new AuraHandledException('Address cannot be blank. Please provide a valid address.');
+            ae.setMessage('Address cannot be blank. Please provide a valid address.');
+            throw ae;
+        }
+
         String encodedAddress = EncodingUtil.urlEncode(address, 'UTF-8');
 
         HttpRequest request = new HttpRequest();
@@ -32,24 +41,25 @@ public with sharing class GeocodingService {
                 res.longitude = parsedResponse.addresses[0].longitude;
                 System.debug('SUCCESS: ' + res);
                 return res;
+            } else {
+                throw new GeocodingException('The API returned a successful response, but no address was found for the query.');
             }
         } else {
-            System.debug('Geocoding callout failed. Status: ' +
-            response.getStatus() +
-            ' Status Code: ' +
-            response.getStatusCode());
+            String errorMessage = 'The Geocoding API failed with status code ' + response.getStatusCode() + '. Response: ' + response.getBody();
+            throw new GeocodingException(errorMessage);
         }
     } catch (System.CalloutException e) {
-        System.debug('Callout error: ' + e.getMessage());
+            throw new GeocodingException('A network error occurred: ' + e.getMessage());
     }
-        return null;
-    }
+}
 
+    @TestVisible
     private class RadarResponseParser {
         public List<AddressWrapper> addresses;
 
     }
 
+    @TestVisible
     private class AddressWrapper {
             public Double latitude;
             public Double longitude;
