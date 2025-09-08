@@ -4,7 +4,8 @@ private class GeocodingService_Test {
     // --- MOCK CLASSES ---
 
     /**
-     * @description A mock that provides a fake SUCCESSFUL response.
+     * @description A mock that provides a fake SUCCESSFUL response with valid coordinates.
+     * Simulates a 200 OK status code.
      */
     private class GeocodingMock_Success implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest req) {
@@ -20,7 +21,8 @@ private class GeocodingService_Test {
     }
 
     /**
-     * @description A mock that provides a fake FAILURE response.
+     * @description A mock that provides a fake FAILURE response from the API.
+     * Simulates a 403 Forbidden status code.
      */
     private class GeocodingMock_Failure implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest req) {
@@ -35,6 +37,10 @@ private class GeocodingService_Test {
         }
     }
 
+    /**
+     * @description A mock that simulates a successful (200) API response that contains an empty
+     * list of addresses, representing a valid query with no results found.
+     */
     private class GeocodingMock_EmptyResult implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest req) {
             HttpResponse res = new HttpResponse();
@@ -48,7 +54,8 @@ private class GeocodingService_Test {
     // --- TEST METHODS ---
 
     /**
-     * @description Tests the success scenario where the API returns a 200 status code.
+     * @description Tests the success scenario where the API returns a 200 status code
+     * and a valid address payload. Verifies that the latitude and longitude are parsed correctly.
      */
     @isTest
     static void testGetCoordinates_Success() {
@@ -64,6 +71,10 @@ private class GeocodingService_Test {
 
     }
 
+    /**
+     * @description Verifies that the service correctly handles a non-200 HTTP status code from the
+     * API by throwing a GeocodingException with a message containing the error code.
+     */
     @isTest
     static void testGetCoordinates_ApiFailure() {
         Test.setMock(HttpCalloutMock.class, new GeocodingMock_Failure());
@@ -90,6 +101,10 @@ private class GeocodingService_Test {
         );
     }
 
+    /**
+     * @description Verifies that the service throws a GeocodingException when the API returns
+     * a 200 OK status but the response body contains no address data.
+     */
     @isTest
     static void testGetCoordinates_EmptyResult() {
         Test.setMock(HttpCalloutMock.class, new GeocodingMock_EmptyResult());
@@ -116,6 +131,10 @@ private class GeocodingService_Test {
         );
     }
 
+    /**
+     * @description Verifies that passing a null or blank address string correctly triggers
+     * an AuraHandledException, preventing a callout from being made.
+     */
     @isTest
     static void testGetCoordinates_BlankAddress_ThrowsException() {
         Exception caughtException = null;

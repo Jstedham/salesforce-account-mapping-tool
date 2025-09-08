@@ -1,15 +1,38 @@
+/**
+ * @description A reusable utility class for making geocoding callouts to the Radar API.
+ * This service is designed to be called from LWC or other Apex classes to convert
+ * a string address into geographic coordinates (latitude and longitude).
+ * @author Jason Stedham
+ * @date 2025-09-08
+ */
 public with sharing class GeocodingService {
+
+    // A private constructor prevents this class from ever being instantiated,
+    // enforcing its use as a static utility class.
     private GeocodingService() {
 
     }
 
+    /**
+     * @description A Data Transfer Object (DTO) that represents the successful
+     * result of a geocoding callout. This is the object returned to the caller.
+     */
     public class GeocodeResponse {
         @AuraEnabled public Double latitude;
         @AuraEnabled public Double longitude;
     }
-
+    
+    // Custom exception for this service
     public class GeocodingException extends Exception {}
 
+    /**
+     * @description Performs a geocoding callout to the Radar API to convert a physical address string
+     * into geographic coordinates. This method is exposed to Lightning Web Components.
+     * @param address The physical address to geocode (e.g., '20 W 34th St, New York, NY').
+     * @return A 'GeocodeResponse' object containing the latitude and longitude of the first address match.
+     * @throws AuraHandledException if the provided address is null or blank.
+     * @throws GeocodingException for network errors, non-200 HTTP status codes, or if the API finds no matching address.
+     */
     @AuraEnabled(cacheable=false)
     public static GeocodeResponse getCoordinates(String address) {
         if(String.isBlank(address)) {
@@ -53,12 +76,22 @@ public with sharing class GeocodingService {
     }
 }
 
+// --- Private Inner Classes (Internal Implementation Details) ---
+
+    /**
+     * @description Internal DTO for deserializing the JSON response from the Radar API.
+     * Its structure mirrors the API's JSON. It is kept private to encapsulate
+     * the implementation details of the service call.
+     */
     @TestVisible
     private class RadarResponseParser {
         public List<AddressWrapper> addresses;
 
     }
 
+    /**
+     * @description Represents the nested address object within the Radar API's JSON response.
+     */
     @TestVisible
     private class AddressWrapper {
             public Double latitude;
