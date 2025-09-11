@@ -1,7 +1,7 @@
 @isTest
 private class GeocodingService_Test {
 
-    // --- MOCK CLASSES ---
+    //////////////// --- MOCK CLASSES --- ///////////////////////
 
     /**
      * @description A mock that provides a fake SUCCESSFUL response with valid coordinates.
@@ -51,7 +51,30 @@ private class GeocodingService_Test {
         }
     }
 
-    // --- TEST METHODS ---
+    /**
+     * @description A mock that simulates a System.CalloutException, representing a
+     * network failure where the request could not be sent.
+     */
+    private class GeocodingMock_Callout_NetworkFailure implements HttpCalloutMock {
+        public HttpResponse respond(HttpRequest req) {
+            throw new System.CalloutException('Unable to send request');
+        }
+    }
+
+    ///////////////// --- TEST METHODS --- /////////////////////////
+
+    /**
+     * @description Tests private constructor is correctly instantiating.
+     */
+    @isTest
+    static void testPrivateConstructor() {
+        Test.startTest();
+        GeocodingService instance = new GeocodingService();
+        Test.stopTest();
+
+        System.assertNotEquals(null, instance, 
+            'An instance should be created successfully within a test context.');
+    }
 
     /**
      * @description Tests the success scenario where the API returns a 200 status code
@@ -147,7 +170,41 @@ private class GeocodingService_Test {
         }
 
         System.assertNotEquals(null, caughtException, 'An exception should have been thrown.');
-        System.assert(caughtException instanceof AuraHandledException, 'Should be an AuraHandledException.');
+        System.assert(
+            caughtException instanceof GeocodingService.GeocodingException,
+            'The thrown exception should be our custom GeocodingException type.'
+        );
         System.assertEquals('Address cannot be blank. Please provide a valid address.', caughtException.getMessage());
+    }
+
+    /**
+     * @description Verifies that a System.CalloutException (e.g., a network error)
+     * is caught and re-thrown as a custom GeocodingException.
+     */
+    @isTest
+    static void testGetCoordinates_NetworkError() {
+        Test.setMock(HttpCalloutMock.class, new GeocodingMock_Callout_NetworkFailure());
+        Exception caughtException = null;
+
+        Test.startTest();
+        
+        try {
+            GeocodingService.getCoordinates('20 W 34th St, New York, NY');
+        } catch (Exception e) {
+            caughtException = e;
+        }
+        Test.stopTest();
+
+        System.assertNotEquals(null, caughtException, 'An exception should have been thrown.');
+
+        System.assert(
+            caughtException instanceof GeocodingService.GeocodingException,
+            'The thrown exception should be our custom GeocodingException type.'
+        );
+
+        System.assert(
+            caughtException.getMessage().contains('A network error occurred'),
+            'The error message should indicate a network error.'
+        );
     }
 }

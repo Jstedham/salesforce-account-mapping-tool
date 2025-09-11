@@ -9,6 +9,7 @@ public with sharing class GeocodingService {
 
     // A private constructor prevents this class from ever being instantiated,
     // enforcing its use as a static utility class.
+    @TestVisible
     private GeocodingService() {
 
     }
@@ -27,18 +28,15 @@ public with sharing class GeocodingService {
 
     /**
      * @description Performs a geocoding callout to the Radar API to convert a physical address string
-     * into geographic coordinates. This method is exposed to Lightning Web Components.
+     * into geographic coordinates.
      * @param address The physical address to geocode (e.g., '20 W 34th St, New York, NY').
      * @return A 'GeocodeResponse' object containing the latitude and longitude of the first address match.
-     * @throws AuraHandledException if the provided address is null or blank.
-     * @throws GeocodingException for network errors, non-200 HTTP status codes, or if the API finds no matching address.
+     * @throws GeocodingException if input address is null or blank, for network errors, non-200 HTTP status codes, or if the API finds no matching address.
      */
-    @AuraEnabled(cacheable=false)
+
     public static GeocodeResponse getCoordinates(String address) {
         if(String.isBlank(address)) {
-            AuraHandledException ae = new AuraHandledException('Address cannot be blank. Please provide a valid address.');
-            ae.setMessage('Address cannot be blank. Please provide a valid address.');
-            throw ae;
+            throw new GeocodingException('Address cannot be blank. Please provide a valid address.');
         }
 
         String encodedAddress = EncodingUtil.urlEncode(address, 'UTF-8');
