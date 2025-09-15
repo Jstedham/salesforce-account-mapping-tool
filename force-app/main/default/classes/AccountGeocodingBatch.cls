@@ -39,12 +39,7 @@ public class AccountGeocodingBatch implements Database.Batchable<sObject>, Datab
                     recordsFailed++;
                     errorMessages.add('Failed to geocode Account: ' + acc.Name + ' (Id: ' + acc.Id + '). Reason: ' + e.getMessage());
                 }
-            } else {
-                recordsFailed++;
-                errorMessages.add(
-                    'Skipped Account: ' + acc.Name + ' (Id: ' + acc.Id + ') due to a blank address.'
-                );
-        }
+            }
     } 
 
     // Update accounts after processing
