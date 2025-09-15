@@ -1,68 +1,6 @@
 @isTest
 private class GeocodingService_Test {
 
-    //////////////// --- MOCK CLASSES --- ///////////////////////
-
-    /**
-     * @description A mock that provides a fake SUCCESSFUL response with valid coordinates.
-     * Simulates a 200 OK status code.
-     */
-    private class GeocodingMock_Success implements HttpCalloutMock {
-        public HttpResponse respond(HttpRequest req) {
-            HttpResponse res = new HttpResponse();
-            res.setHeader('Content-Type', 'application/json');
-
-            String fakeJsonBody = '{"addresses":[{"latitude":40.7486, "longitude":-73.9856}]}';
-            res.setBody(fakeJsonBody);
-
-            res.setStatusCode(200);
-            return res;
-        }
-    }
-
-    /**
-     * @description A mock that provides a fake FAILURE response from the API.
-     * Simulates a 403 Forbidden status code.
-     */
-    private class GeocodingMock_Failure implements HttpCalloutMock {
-        public HttpResponse respond(HttpRequest req) {
-            HttpResponse res = new HttpResponse();
-            res.setHeader('Content-Type', 'application/json');
-
-            String fakeJsonBody = '{"meta":{"code":403,"message":"Forbidden"}}';
-            res.setBody(fakeJsonBody);
-
-            res.setStatusCode(403); // Simulate a "Forbidden" error
-            return res;
-        }
-    }
-
-    /**
-     * @description A mock that simulates a successful (200) API response that contains an empty
-     * list of addresses, representing a valid query with no results found.
-     */
-    private class GeocodingMock_EmptyResult implements HttpCalloutMock {
-        public HttpResponse respond(HttpRequest req) {
-            HttpResponse res = new HttpResponse();
-            res.setHeader('Content-Type', 'application/json');
-            res.setBody('{"addresses":[]}'); // Successful call, but no data
-            res.setStatusCode(200);
-            return res;
-        }
-    }
-
-    /**
-     * @description A mock that simulates a System.CalloutException, representing a
-     * network failure where the request could not be sent.
-     */
-    private class GeocodingMock_Callout_NetworkFailure implements HttpCalloutMock {
-        public HttpResponse respond(HttpRequest req) {
-            throw new System.CalloutException('Unable to send request');
-        }
-    }
-
-    ///////////////// --- TEST METHODS --- /////////////////////////
-
     /**
      * @description Tests private constructor is correctly instantiating.
      */
@@ -82,7 +20,7 @@ private class GeocodingService_Test {
      */
     @isTest
     static void testGetCoordinates_Success() {
-        Test.setMock(HttpCalloutMock.class, new GeocodingMock_Success());
+        Test.setMock(HttpCalloutMock.class, HttpMockFactory.createGeocodingSuccessMock());
 
         Test.startTest();
         GeocodingService.GeocodeResponse result = GeocodingService.getCoordinates('20 W 34th St, New York, NY');
@@ -100,7 +38,7 @@ private class GeocodingService_Test {
      */
     @isTest
     static void testGetCoordinates_ApiFailure() {
-        Test.setMock(HttpCalloutMock.class, new GeocodingMock_Failure());
+        Test.setMock(HttpCalloutMock.class, HttpMockFactory.createGeocodingFailureMock());
         Exception caughtException = null;
 
         Test.startTest();
@@ -130,7 +68,7 @@ private class GeocodingService_Test {
      */
     @isTest
     static void testGetCoordinates_EmptyResult() {
-        Test.setMock(HttpCalloutMock.class, new GeocodingMock_EmptyResult());
+        Test.setMock(HttpCalloutMock.class, HttpMockFactory.createGeocodingEmptyResultMock());
         Exception caughtException = null;
 
         Test.startTest();
@@ -156,7 +94,7 @@ private class GeocodingService_Test {
 
     /**
      * @description Verifies that passing a null or blank address string correctly triggers
-     * an AuraHandledException, preventing a callout from being made.
+     * an GeocodingException, preventing a callout from being made.
      */
     @isTest
     static void testGetCoordinates_BlankAddress_ThrowsException() {
@@ -183,7 +121,7 @@ private class GeocodingService_Test {
      */
     @isTest
     static void testGetCoordinates_NetworkError() {
-        Test.setMock(HttpCalloutMock.class, new GeocodingMock_Callout_NetworkFailure());
+        Test.setMock(HttpCalloutMock.class, HttpMockFactory.createGeocodingNetworkFailureMock());
         Exception caughtException = null;
 
         Test.startTest();
