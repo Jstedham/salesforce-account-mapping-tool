@@ -20,32 +20,18 @@ public class AccountGeocodingBatch implements Database.Batchable<sObject>, Datab
     }
 
     public void execute(Database.BatchableContext bc, List<Account> scope) {
-        List<Account> accountsToUpdate = new List<Account>();
+    
+        AccountProcessorService.GeocodeAccountsResult result = AccountProcessorService.geocodeAccounts(scope);
 
-        for(Account acc : scope) {
-            recordsProcessed++;
-            String fullAddress = buildAddressString(acc);
+        // Update stateful variables with the results from the service
+        recordsProcessed += result.recordsProcessed;
+        recordsFailed += result.recordsFailed;
+        errorMessages.addAll(result.errorMessages);
 
-            if (String.isNotBlank(fullAddress)) {
-                try {
-                    GeocodingService.GeocodeResponse response = GeocodingService.getCoordinates(fullAddress);
-
-                    if (response != null) {
-                        acc.BillingLatitude = response.latitude;
-                        acc.BillingLongitude = response.longitude;
-                        accountsToUpdate.add(acc);
-                    }
-                } catch (Exception e) {
-                    recordsFailed++;
-                    errorMessages.add('Failed to geocode Account: ' + acc.Name + ' (Id: ' + acc.Id + '). Reason: ' + e.getMessage());
-                }
-            }
-    } 
-
-    // Update accounts after processing
-    if(!accountsToUpdate.isEmpty()) {
-        Database.update(accountsToUpdate, false);
-    }
+        // Update accounts after processing
+        if(!result.accountsToUpdate.isEmpty()) {
+        Database.update(result.accountsToUpdate, false);
+        }
 }
     /**
      * @description Sends a summary email after all batches are processed with the results and any errors that were collected.
@@ -84,19 +70,4 @@ public class AccountGeocodingBatch implements Database.Batchable<sObject>, Datab
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
     }
 
-    /**
-     * @description A helper method to construct a single, clean address string for the GeocodingService from an Account's billing address fields, handling any null values.
-     * @param acc The Account record.
-     * @return A formatted address string that the GeocodingService expects.
-     */
-    private String buildAddressString(Account acc) {
-        List<String> addressParts = new List<String>();
-        if (String.isNotBlank(acc.BillingStreet)) addressParts.add(acc.BillingStreet);
-        if (String.isNotBlank(acc.BillingCity)) addressParts.add(acc.BillingCity);
-        if (String.isNotBlank(acc.BillingState)) addressParts.add(acc.BillingState);
-        if (String.isNotBlank(acc.BillingPostalCode)) addressParts.add(acc.BillingPostalCode);
-        if (String.isNotBlank(acc.BillingCountry)) addressParts.add(acc.BillingCountry);
-
-        return String.join(addressParts, ', ');
-    }
 }
