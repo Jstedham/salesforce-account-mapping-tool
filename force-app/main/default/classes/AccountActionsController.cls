@@ -13,7 +13,35 @@ public with sharing class AccountActionsController {
     public static void enqueueGeocodingJob(List<Id> accountIds){
         // Enqueue the Queueable job to process the accounts
         if (accountIds != null && !accountIds.isEmpty()) {
-            System.enqueueJob(new GeocodeAccountsQueueable(accountIds));
+            try{
+                System.enqueueJob(new GeocodeAccountsQueueable(accountIds));
+            } catch (Exception e) {
+                throw new AuraHandledException('Failed to start the geocoding job. Reason: ' + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * @description Invocable Action for Flows to start the geocoding process for a list of accounts.
+     * @param accountIds A list of Account record Ids passed from a Flow.
+     */
+    @InvocableMethod(label='Enqueue Geocoding for Accounts' description='Takes a list of Account Ids and starts an asynchronous job to add geocoding information.')
+    public static void enqueueGeocodingForFlow(List<List<String>> requests) {
+        
+        List<Id> allAccountIds = new List<Id>();
+        
+        // Flows pass a list of requests. We need to iterate through them
+        // and collect all the Ids into a single list.
+        if (requests != null && !requests.isEmpty()) {
+            for (List<String> accountIdStrings : requests) {
+                for(String strId : accountIdStrings){
+                    allAccountIds.add((Id)strId);
+                }
+            }
+        }
+        // Call the original method with the flattened list of Ids
+        if(!allAccountIds.isEmpty()){
+             enqueueGeocodingJob(allAccountIds);
         }
     }
 
