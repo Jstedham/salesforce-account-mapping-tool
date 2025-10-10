@@ -1,0 +1,25 @@
+<template>
+    <div class="account-list" style="height:425px; overflow-y:auto;">
+        <template for:each={accounts} for:item="account">
+            <div key={account.Id} class="slds-p-around_medium slds-border_bottom list-item" data-id={account.Id} onclick={handleSelect}>
+                <p><strong>{account.Name}</strong></p>
+                <p>{account.BillingStreet}</p>
+                <p>{account.BillingCity}, {account.BillingState} {account.BillingPostalCode}</p>
+            </div>
+        </template>
+    </div>
+    <!-- Pagination Controls -->
+    <div class="slds-p-around_medium">
+        <lightning-layout horizontal-align="space">
+            <lightning-layout-item>
+                <lightning-button label="Previous" icon-name="utility:chevronleft" onclick={handlePrevious} disabled={disablePrevious}></lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-align-middle">
+                Page {pageNumber} of {totalPages}
+            </lightning-layout-item>
+            <lightning-layout-item>
+                <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right" onclick={handleNext} disabled={disableNext}></lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+</template>

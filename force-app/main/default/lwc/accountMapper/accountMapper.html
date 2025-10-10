@@ -1,0 +1,79 @@
+<template>
+    <div data-id="scroll-target">
+    <lightning-card class="slds-p-around_medium">
+        <div class="slds-grid slds-gutters">
+            <!-- Left Column: Account List Child Component -->
+            <div class="slds-col slds-size_1-of-3">
+                    <c-account-list
+                    accounts={accounts}
+                    total-pages={totalPages}
+                    page-number={pageNumber}
+                    onprevious={handlePreviousPage}
+                    onnext={handleNextPage}
+                    onselect={handleAccountListSelect}
+                ></c-account-list> 
+            </div>
+
+            <!-- Right Column: Map Child Component -->
+            <div class="slds-col slds-size_2-of-3">
+                <div class="map-container slds-p-right_small">
+                    <c-account-map
+                        map-markers={mapMarkers}
+                        zoom-level={zoomLevel}
+                        center={center}
+                        onaccountselect={handleMarkerSelect}>
+                    </c-account-map>
+
+                    <template if:true={selectedAccount}>
+                        <div class="map-overlay">
+                            <lightning-card title={selectedAccount.Name} icon-name="standard:account">
+                                <lightning-button-icon
+                                    icon-name="utility:close"
+                                    slot="actions"
+                                    alternative-text="Close"
+                                    onclick={handleCloseOverlay}>
+                                </lightning-button-icon>
+
+                                <div class="slds-p-horizontal_medium">
+
+                                    <p>{selectedAccount.BillingStreet}</p>
+                                    <p>{selectedAccount.BillingCity}, {selectedAccount.BillingState}</p>
+                                    <p>Team: {teamDisplayValue}</p>
+                                    
+                                <!-- Conditionally Rendered Team Assignment Form-->
+                                    <template if:true={isEditingTeam}>
+                                    <div class="slds-m-top_medium">
+                                    <lightning-record-edit-form
+                                        record-id={selectedAccount.Id}
+                                        object-api-name="Account"
+                                        onsuccess={handleSuccess}>
+                                        <lightning-input-field field-name="Team__c" variant="label-hidden"></lightning-input-field>
+                                        <div class="slds-m-top_medium">
+                                            <lightning-button label="Cancel" onclick={handleCancel}></lightning-button>
+                                            <lightning-button variant="brand" type="submit" label="Save" class="slds-m-left_x-small"></lightning-button>
+                                        </div>
+                                </lightning-record-edit-form>
+                                </div>
+                            </template>
+                                </div>
+                                
+                                <div slot="footer">
+                                    <lightning-button
+                                        label="View Record Details"
+                                        onclick={handleViewRecord}>
+                                    </lightning-button>
+                                    <lightning-button
+                                        label="Change Team"
+                                        onclick={handleChangeTeamClick}
+                                        class="slds-m-left_x-small">
+                                    </lightning-button>
+                                </div>
+                            </lightning-card>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+    </div>
+</template>
