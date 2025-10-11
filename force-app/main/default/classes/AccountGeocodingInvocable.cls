@@ -1,3 +1,8 @@
+/**
+ * @description An invocable Apex class that allows a Flow to initiate an
+ * asynchronous geocoding job for a list of Account records.
+ * @author Jason Stedham
+ */
 public with sharing class AccountGeocodingInvocable {
     /**
      * @description Invocable Action for Flows to start the geocoding process for a list of accounts.

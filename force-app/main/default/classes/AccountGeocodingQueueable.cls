@@ -1,3 +1,10 @@
+/**
+ * @description A queueable Apex job that geocodes a small batch of Account records asynchronously.
+ * It is designed for user-initiated requests, such as from a Flow, where the number of
+ * records is limited. This job should process no more than 10 accounts at a time to
+ * respect external API rate limits.
+ * @author Jason Stedham
+ */
 public class AccountGeocodingQueueable implements Queueable, Database.AllowsCallouts {
     private List<Id> accountIds;
 
