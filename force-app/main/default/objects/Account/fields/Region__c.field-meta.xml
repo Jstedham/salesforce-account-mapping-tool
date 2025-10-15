@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Region__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(BillingState,
+    /* -- Northeast -- */
+    &quot;CT&quot;, &quot;Northeast&quot;,
+    &quot;DE&quot;, &quot;Northeast&quot;,
+    &quot;ME&quot;, &quot;Northeast&quot;,
+    &quot;MD&quot;, &quot;Northeast&quot;,
+    &quot;MA&quot;, &quot;Northeast&quot;,
+    &quot;NH&quot;, &quot;Northeast&quot;,
+    &quot;NJ&quot;, &quot;Northeast&quot;,
+    &quot;NY&quot;, &quot;Northeast&quot;,
+    &quot;PA&quot;, &quot;Northeast&quot;,
+    &quot;RI&quot;, &quot;Northeast&quot;,
+    &quot;VT&quot;, &quot;Northeast&quot;,
+
+    /* -- Southeast -- */
+    &quot;AL&quot;, &quot;Southeast&quot;,
+    &quot;AR&quot;, &quot;Southeast&quot;,
+    &quot;FL&quot;, &quot;Southeast&quot;,
+    &quot;GA&quot;, &quot;Southeast&quot;,
+    &quot;KY&quot;, &quot;Southeast&quot;,
+    &quot;LA&quot;, &quot;Southeast&quot;,
+    &quot;MS&quot;, &quot;Southeast&quot;,
+    &quot;NC&quot;, &quot;Southeast&quot;,
+    &quot;SC&quot;, &quot;Southeast&quot;,
+    &quot;TN&quot;, &quot;Southeast&quot;,
+    &quot;VA&quot;, &quot;Southeast&quot;,
+    &quot;WV&quot;, &quot;Southeast&quot;,
+
+    /* -- Midwest -- */
+    &quot;IL&quot;, &quot;Midwest&quot;,
+    &quot;IN&quot;, &quot;Midwest&quot;,
+    &quot;IA&quot;, &quot;Midwest&quot;,
+    &quot;KS&quot;, &quot;Midwest&quot;,
+    &quot;MI&quot;, &quot;Midwest&quot;,
+    &quot;MN&quot;, &quot;Midwest&quot;,
+    &quot;MO&quot;, &quot;Midwest&quot;,
+    &quot;NE&quot;, &quot;Midwest&quot;,
+    &quot;ND&quot;, &quot;Midwest&quot;,
+    &quot;OH&quot;, &quot;Midwest&quot;,
+    &quot;SD&quot;, &quot;Midwest&quot;,
+    &quot;WI&quot;, &quot;Midwest&quot;,
+
+    /* -- Southwest -- */
+    &quot;AZ&quot;, &quot;Southwest&quot;,
+    &quot;NM&quot;, &quot;Southwest&quot;,
+    &quot;OK&quot;, &quot;Southwest&quot;,
+    &quot;TX&quot;, &quot;Southwest&quot;,
+
+    /* -- West -- */
+    &quot;AK&quot;, &quot;West&quot;,
+    &quot;CA&quot;, &quot;West&quot;,
+    &quot;CO&quot;, &quot;West&quot;,
+    &quot;HI&quot;, &quot;West&quot;,
+    &quot;ID&quot;, &quot;West&quot;,
+    &quot;MT&quot;, &quot;West&quot;,
+    &quot;NV&quot;, &quot;West&quot;,
+    &quot;OR&quot;, &quot;West&quot;,
+    &quot;UT&quot;, &quot;West&quot;,
+    &quot;WA&quot;, &quot;West&quot;,
+    &quot;WY&quot;, &quot;West&quot;,
+
+    /* -- Default Value -- */
+    &quot;Other&quot;
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Region</label>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

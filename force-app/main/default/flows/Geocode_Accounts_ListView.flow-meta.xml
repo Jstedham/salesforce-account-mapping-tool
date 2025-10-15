@@ -5,7 +5,7 @@
         <label>Geocode Accounts</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <actionName>AccountActionsController</actionName>
+        <actionName>AccountGeocodingInvocable</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Confirmation_Screen</targetReference>
@@ -20,7 +20,7 @@
                 <elementReference>ids</elementReference>
             </value>
         </inputParameters>
-        <nameSegment>AccountActionsController</nameSegment>
+        <nameSegment>AccountGeocodingInvocable</nameSegment>
         <offset>0</offset>
     </actionCalls>
     <apiVersion>64.0</apiVersion>
@@ -183,7 +183,7 @@
             <targetReference>Count_Records_for_Validation</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>ids</name>
         <dataType>String</dataType>
