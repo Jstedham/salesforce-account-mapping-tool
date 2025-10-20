@@ -60,7 +60,6 @@ public with sharing class GeocodingService {
                 GeocodeResponse res = new GeocodeResponse();
                 res.latitude = parsedResponse.addresses[0].latitude;
                 res.longitude = parsedResponse.addresses[0].longitude;
-                System.debug('SUCCESS: ' + res);
                 return res;
             } else {
                 throw new GeocodingException('The API returned a successful response, but no address was found for the query.');
