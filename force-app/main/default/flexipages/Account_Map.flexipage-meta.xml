@@ -10,7 +10,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Team Assignment Map</masterLabel>
+    <masterLabel>Account Map</masterLabel>
     <template>
         <name>flexipage:defaultAppHomeTemplate</name>
     </template>

@@ -34,6 +34,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>AccountMapperController_Test</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>AccountProcessorService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -68,7 +72,7 @@
         <layout>Account-Account Layout</layout>
     </layoutAssignments>
     <tabVisibilities>
-        <tab>Team_Assignment_Map</tab>
+        <tab>Account_Map</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <userLicense>Salesforce</userLicense>
