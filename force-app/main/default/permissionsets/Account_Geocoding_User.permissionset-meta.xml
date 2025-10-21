@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>AccountGeocodingInvocable</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>For users who need to initiate the geocoding process from the list view.</description>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>Radar_IO_API_ExtCred-Geocoding Service Principal</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
+    <flowAccesses>
+        <enabled>true</enabled>
+        <flow>Geocode_Accounts_ListView</flow>
+    </flowAccesses>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Account Geocoding User</label>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Account</object>
+        <viewAllFields>false</viewAllFields>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+</PermissionSet>
